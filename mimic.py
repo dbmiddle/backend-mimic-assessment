@@ -50,14 +50,14 @@ __author__ = "???"
 
 
 def create_mimic_dict(filename):
-    """Returns mimic dict mapping each word to list of words which follow it. 
+    """Returns mimic dict mapping each word to list of words which follow it.
     For example:
         Input: "I am a software developer, and I don't care who knows"
-        Output: 
+        Output:
             {
                 "" : ["I"],
-                "I" : ["am", "don't"], 
-                "am": ["a"], 
+                "I" : ["am", "don't"],
+                "am": ["a"],
                 "a": ["software"],
                 "software" : ["developer,"],
                 "developer," : ["and"],
@@ -68,8 +68,22 @@ def create_mimic_dict(filename):
                 "who" : ["knows"]
             }
     """
-    # +++your code here+++
-    
+    with open(filename, 'r') as f:
+        contents = f.read()
+        split_contents = contents.split()
+        the_mimic_dict = {}
+        global first
+        first = split_contents[0]
+        starter = ''
+        for i in range(len(split_contents) - 1):
+            if starter not in the_mimic_dict:
+                the_mimic_dict[starter] = split_contents[i]
+            if split_contents[i] in the_mimic_dict:
+                the_mimic_dict[split_contents[i]] += [split_contents[i + 1]]
+            else:
+                the_mimic_dict[split_contents[i]] = [split_contents[i + 1]]
+        return the_mimic_dict
+
 
 def print_mimic(mimic_dict, start_word):
     """Given a previously compiled mimic_dict and start_word, prints 200 random words:
@@ -78,8 +92,12 @@ def print_mimic(mimic_dict, start_word):
         - Randomly select a new word from the next-list
         - Repeat this process 200 times
     """
-    # +++your code here+++
-    pass
+    first_word = mimic_dict.pop(start_word)
+    random_words = [''.join(first_word)]
+    for i in range(0, 200):
+        next_word_values = mimic_dict.pop(random.choice(mimic_dict.keys()))
+        random_words += next_word_values
+    print(' '.join(random_words))
 
 
 # Provided main(), calls mimic_dict() and mimic()
